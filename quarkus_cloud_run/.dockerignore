@@ -1,0 +1,8 @@
+# Ignore build artifacts and development files
+target/
+.git/
+.idea/
+*.iml
+.vscode/
+*.log
+.DS_Store

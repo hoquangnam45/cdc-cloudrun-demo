@@ -1,0 +1,33 @@
+####
+# Multi-stage Dockerfile to build Quarkus native application from source
+# Stage 1: Build the native executable
+####
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS builder
+
+WORKDIR /build
+
+# Copy Maven wrapper and pom.xml first for better layer caching
+COPY --chown=quarkus:quarkus mvnw mvnw.cmd pom.xml ./
+COPY --chown=quarkus:quarkus .mvn .mvn
+
+# Download dependencies (cached layer if pom.xml doesn't change)
+RUN ./mvnw dependency:go-offline -B
+
+# Copy source code
+COPY --chown=quarkus:quarkus src ./src
+
+# Build the native executable
+RUN ./mvnw package -Pnative -DskipTests -B
+
+####
+# Stage 2: Create the runtime image
+####
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
+
+WORKDIR /work/
+
+COPY --from=builder --chown=1001:root --chmod=0755 /build/target/*-runner /work/application
+
+EXPOSE 8080
+
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
