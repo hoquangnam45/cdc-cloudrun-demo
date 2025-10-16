@@ -44,3 +44,12 @@ output "db_pooled_connection_name" {
 output "db_pooled_private_ip" {
   value = google_sql_database_instance.pooled.private_ip_address
 }
+
+# Project and Region outputs
+output "gcp_project_id" {
+  value = var.gcp_project_id
+}
+
+output "gcp_region" {
+  value = var.gcp_region
+}

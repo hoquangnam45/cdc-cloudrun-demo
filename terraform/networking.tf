@@ -14,8 +14,11 @@ resource "google_compute_subnetwork" "vpc_connector" {
 
 # VPC Access Connector for Cloud Run
 resource "google_vpc_access_connector" "connector" {
-  name   = "hello-cloud-run-connector"
-  region = var.gcp_region
+  name          = "hello-cloud-run-connector"
+  region        = var.gcp_region
+  machine_type  = "e2-micro"
+  min_instances = 2
+  max_instances = 3
 
   subnet {
     name = google_compute_subnetwork.vpc_connector.name

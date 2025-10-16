@@ -18,7 +18,7 @@ variable "db_name" {
 variable "db_user" {
   description = "The username for the Cloud SQL database."
   type        = string
-  default     = "db-user"
+  default     = "dbadmin"
 }
 
 variable "db_password" {
