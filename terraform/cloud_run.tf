@@ -19,6 +19,14 @@ resource "google_cloud_run_v2_service" "jvm_cloud_sql" {
       max_instance_count = 5
     }
 
+    vpc_access {
+      egress = "PRIVATE_RANGES_ONLY"
+      network_interfaces {
+        network    = google_compute_network.vpc.name
+        subnetwork = google_compute_subnetwork.vpc_connector.name
+      }
+    }
+
     containers {
       image = "asia-southeast1-docker.pkg.dev/${var.gcp_project_id}/cloud-run-demo/quarkus-cloud-run-jvm:latest"
       ports {
@@ -78,6 +86,14 @@ resource "google_cloud_run_v2_service" "native_cloud_sql" {
     scaling {
       min_instance_count = 0
       max_instance_count = 5
+    }
+
+    vpc_access {
+      egress = "PRIVATE_RANGES_ONLY"
+      network_interfaces {
+        network    = google_compute_network.vpc.name
+        subnetwork = google_compute_subnetwork.vpc_connector.name
+      }
     }
 
     containers {
@@ -145,6 +161,14 @@ resource "google_cloud_run_v2_service" "jvm_cloud_sql_pgbouncer" {
       max_instance_count = 5
     }
 
+    vpc_access {
+      egress = "PRIVATE_RANGES_ONLY"
+      network_interfaces {
+        network    = google_compute_network.vpc.name
+        subnetwork = google_compute_subnetwork.vpc_connector.name
+      }
+    }
+
     containers {
       image = "asia-southeast1-docker.pkg.dev/${var.gcp_project_id}/cloud-run-demo/quarkus-cloud-run-jvm:latest"
       ports {
@@ -204,6 +228,14 @@ resource "google_cloud_run_v2_service" "native_cloud_sql_pgbouncer" {
     scaling {
       min_instance_count = 0
       max_instance_count = 5
+    }
+
+    vpc_access {
+      egress = "PRIVATE_RANGES_ONLY"
+      network_interfaces {
+        network    = google_compute_network.vpc.name
+        subnetwork = google_compute_subnetwork.vpc_connector.name
+      }
     }
 
     containers {

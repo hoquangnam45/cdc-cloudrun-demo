@@ -4,27 +4,12 @@ resource "google_compute_network" "vpc" {
   auto_create_subnetworks = false
 }
 
-# Subnet for VPC Connector
+# Subnet for Direct VPC Egress
 resource "google_compute_subnetwork" "vpc_connector" {
   name          = "hello-cloud-run-connector-subnet"
-  ip_cidr_range = "10.8.0.0/28"
+  ip_cidr_range = "10.8.0.0/24"
   region        = var.gcp_region
   network       = google_compute_network.vpc.id
-}
-
-# VPC Access Connector for Cloud Run
-resource "google_vpc_access_connector" "connector" {
-  name          = "hello-cloud-run-connector"
-  region        = var.gcp_region
-  machine_type  = "e2-micro"
-  min_instances = 2
-  max_instances = 3
-
-  subnet {
-    name = google_compute_subnetwork.vpc_connector.name
-  }
-
-  depends_on = [google_compute_subnetwork.vpc_connector, google_project_service.vpcaccess]
 }
 
 # Private Service Connection for Cloud SQL
@@ -43,11 +28,6 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 }
 
 # Enable required APIs
-resource "google_project_service" "vpcaccess" {
-  service            = "vpcaccess.googleapis.com"
-  disable_on_destroy = false
-}
-
 resource "google_project_service" "servicenetworking" {
   service            = "servicenetworking.googleapis.com"
   disable_on_destroy = false
